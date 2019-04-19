@@ -1,5 +1,14 @@
 # Reusable PyTorch codes
 
+## Calculate Number of Parameters
+```python
+# Total Number of Parameters
+total_params = sum(p.numel() for p in model.parameters())
+
+# Total Number of Trainable Parameters
+total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+```
+
 ## ImageFolder with Folder Paths
 
 ```python
@@ -27,4 +36,15 @@ class Reshape(nn.Module):
 
     def forward(self, x):
         return x.view(*self.shape)
+```
+
+## Debugger Layer for nn.Sequential
+```python
+class Debugger(nn.Module):
+    def __init__(self):
+        super(Debugger, self).__init__()
+    
+    def forward(self, x):
+        print(x)
+        return x
 ```
