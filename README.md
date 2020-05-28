@@ -49,6 +49,50 @@ class Debugger(nn.Module):
         return x
 ```
 
+## Concatenate Images to Form Image Grids
+```python
+def concatenate_images(images, num_rows=2):
+    B,C,H,W = images.shape
+    num_cols = 1 + (B // num_rows) - (((B % num_rows) == 0) * 1)
+
+    # Placeholder Image
+    concat_image = np.zeros([C, num_rows*H, num_cols*W])
+
+    # Make the Grid
+    for i in range(B): 
+        cur_row = i // num_cols
+        cur_col = i % num_cols   
+        concat_image[:, cur_row*H: (cur_row+1)*H, cur_col*W: (cur_col+1)*W] = images[i]
+
+    # Remove Channel Dimension if Image assumed to be Graymap
+    if (C==1):
+        return concat_image.reshape(concat_image.shape[1], concat_image.shape[2])
+    else:
+        return concat_image
+```
+
+## Flexible Pyplot show image
+```python
+def show_img(img, title=""):
+    # Check if image is a Graymap
+    if (len(img.shape) == 2):
+        H,W = img.shape
+    else:
+        C,H,W = img.shape
+        img = img.transpose(1,2,0)
+
+    fig = plt.figure(figsize=(10,10))
+    plt.title(title)
+
+    if (len(img.shape) == 2):
+        plt.imshow(img, cmap='gray')
+    else:
+        plt.imshow(img)
+
+    plt.show()
+    plt.close()
+```
+
 ## PGMDataset (ImageFolder specifically for Cropped Extended YaleB Dataset)
 ```python
 class PGMDataset(Dataset):
