@@ -172,3 +172,25 @@ class PGMDataset(Dataset):
         with zipfile.ZipFile(zip_path, "r") as zip_ref:
             zip_ref.extractall(self.dataset_path)
 ```
+## Python Debugger for Multiprocess
+```python
+import pdb
+
+class ForkedPdb(pdb.Pdb):
+    """A Pdb subclass that may be used
+    from a forked multiprocessing child
+
+    Source: https://stackoverflow.com/a/23654936
+    
+    To use:
+        ForkedPdb().set_trace()
+
+    """
+    def interaction(self, *args, **kwargs):
+        _stdin = sys.stdin
+        try:
+            sys.stdin = open('/dev/stdin')
+            pdb.Pdb.interaction(self, *args, **kwargs)
+        finally:
+            sys.stdin = _stdin
+```
