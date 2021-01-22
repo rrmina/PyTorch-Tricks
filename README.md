@@ -194,3 +194,11 @@ class ForkedPdb(pdb.Pdb):
         finally:
             sys.stdin = _stdin
 ```
+
+## Calling ipdb debugger durring error
+```python
+from ipdb import launch_ipdb_on_exception
+
+with launch_ipdb_on_exception():
+    ...
+```
