@@ -203,10 +203,20 @@ with launch_ipdb_on_exception():
     ...
 ```
 
-## Sorting a list according to another list
+## Sorting a list according to another list (Method 1)
 ```python
 x = [['A'], ['B', 'C'], ['D'], ['E']]
 y = [1,0,3,2]
 
-result_list = [i for _,i sorted(zip(y, x))]
+result_list = [i for _,i in sorted(zip(y, x))]
+```
+
+## Sorting a list according to another list (Method 2)
+```python
+x = [['A'], ['B', 'C'], ['D'], ['E']]
+y = [1,0,3,2]
+
+indices = [i for i in range(len(x))]                        # indices
+sorted_indices = [idx for _,idx in sorted(zip(y,indices))]  # sorted indices
+result_list = [x[idx] for idx in sorted_indices]            # sorted list
 ```
