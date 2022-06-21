@@ -202,3 +202,11 @@ from ipdb import launch_ipdb_on_exception
 with launch_ipdb_on_exception():
     ...
 ```
+
+## Sorting a list according to another list
+```python
+x = [['A'], ['B', 'C'], ['D'], ['E']]
+y = [1,0,3,2]
+
+result_list = [i for _,i sorted(zip(y, x))]
+```
