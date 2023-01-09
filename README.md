@@ -220,3 +220,20 @@ indices = [i for i in range(len(x))]                        # indices
 sorted_indices = [idx for _,idx in sorted(zip(y,indices))]  # sorted indices
 result_list = [x[idx] for idx in sorted_indices]            # sorted list
 ```
+
+## Automatically making folders when saving file objects
+```python
+def safe_save(obj, filename):
+    
+    # Make sure the folder exists
+    hierarchy = save_path.split("/")
+    
+    for i in range(1, len(hierarchy)):
+        folder = "/".join(hierarchy[:i])
+        
+        if not os.path.exists(folder):
+            os.mkdir(folder)
+            
+    with open(filename, "wb") as outp:  # Overwrites any existing file.
+        pickle.dump(obj, outp, pickle.HIGHEST_PROTOCOL)
+```
