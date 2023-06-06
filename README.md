@@ -242,3 +242,33 @@ def safe_save(obj, filename):
 ```
 jupyter nbconvert --to html --ExtractOutputPreprocessor.enabled=True "notebook_name.ipynb"
 ```
+
+## False Positive and/or False Negative Regularization
+```python
+def FP_loss(logits, y):
+    softmax_out = torch.softmax(logits, -1)
+    max_softmax, _ = torch.max(softmax_out, dim=-1)
+    softmax_normalised = softmax_out / max_softmax.view(-1,1)
+
+    y_reversed = 1 - y
+    y_onehot_reversed = to_onehot(y_reversed)
+
+    fp_ = torch.sum(softmax_normalised * y_onehot_reversed, dim=1)
+    fp_loss = torch.mean(fp_)
+
+    return fp_loss
+    
+    
+###################################################################### 
+#                           Sample Usecase                           #
+######################################################################
+criterion = nn.CrossEntropyLoss()
+classification_loss = critraion(out, y)             # Original Loss
+fp_loss = FP_loss(out, y)                           # FP Loss Regularizer
+
+BETA = 0.5                                          # Hyperparameter weight for FP loss, may use bigger weights
+total_loss = classification_loss + BETA * fp_loss   # Combine losses
+
+total_loss.backward()
+optimizer.step()
+```
