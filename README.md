@@ -245,6 +245,37 @@ jupyter nbconvert --to html --ExtractOutputPreprocessor.enabled=True "notebook_n
 
 ## False Positive and/or False Negative Regularization
 ```python
+#######################################################################################################
+# Helper Function Only
+# https://discuss.pytorch.org/t/convert-int-into-one-hot-format/507/4
+# Converts [0,1,0,1] to [[1,0], [0,1], [1,0], [0,1]]
+#######################################################################################################
+def to_onehot(y, num_classes=2):
+    y = y.view(-1, 1)
+    batch_size = y.shape[0]
+    y_onehot = torch.FloatTensor(batch_size, num_classes).to(y.device)
+    y_onehot.zero_()
+
+    y_onehot.scatter_(1, y, 1)
+
+    return y_onehot
+    
+#######################################################################################################
+#
+#   FP_loss: Reduces false positives by lowering the logits that do not correspond to the correct label
+# 
+#   Example: 
+#    Let y = label, y_oh = one-hot representation of y, and y_hat = logits
+# 
+#    For a Datapoint with y = [0] or y_oh [1, 0], and y_hat = [0.7, 0.6]
+#       
+#       A False positive happens if y_hat predicts [1], so to reduce the chance 
+#       of predicting a False Positive, FP_loss aims to minimize the 2nd value of y_hat
+#   
+#    Similarly, for a datapoint with y = [1] or y_oh [0, 1], and y_hat = [0.7, 0.6]
+#       FP_loss aims to reduce 0.7 so that after some time, 0.6 will be bigger than the 1st of y_hat
+#
+######################################################################################################
 def FP_loss(logits, y):
     softmax_out = torch.softmax(logits, -1)
     max_softmax, _ = torch.max(softmax_out, dim=-1)
