@@ -303,3 +303,9 @@ total_loss = classification_loss + BETA * fp_loss   # Combine losses
 total_loss.backward()
 optimizer.step()
 ```
+
+## Getting the (callable) methods of an **object**
+```python
+object_methods = [method_name for method_name in dir(object)
+                  if callable(getattr(object, method_name))]
+```
